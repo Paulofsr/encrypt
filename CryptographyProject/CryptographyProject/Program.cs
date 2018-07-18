@@ -18,6 +18,8 @@ namespace CryptographyProject
             var b = EncryptAes("AbC");
             var validB = b == EncryptAes("aBc");
             Console.WriteLine($"Password 'AbC' result '{b}'. Validate 'EncryptAes(\"aBc\")' result {validB}.");
+            Console.WriteLine($"'123' Result: {EncryptSHA1("123")}");
+            Console.WriteLine($"'123' Result: {EncryptSHA1("123") == EncryptSHA1("123")}");
             Console.Read();
         }
 
@@ -26,6 +28,7 @@ namespace CryptographyProject
         {
             return Convert.ToBase64String(EncryptAes(Encoding.UTF8.GetBytes(input)));
         }
+
         private static byte[] EncryptAes(byte[] input)
         {
             PasswordDeriveBytes pdb = new PasswordDeriveBytes("7D21A773-FC11-4258-B024-D4ECFA0C980A", new byte[] { 0x43, 0x87, 0x23, 0x72, 0x45, 0x56, 0x68, 0x14, 0x62, 0x84 });
@@ -39,5 +42,22 @@ namespace CryptographyProject
             return ms.ToArray();
         }
         #endregion Cryptography with AES
+
+        #region Cryptography with SHA1
+        private static string EncryptSHA1(string input)
+        {
+            try
+            {
+                byte[] buffer = Encoding.Default.GetBytes(input);
+                SHA1CryptoServiceProvider cryptoTransformSHA1 = new SHA1CryptoServiceProvider();
+                string hash = BitConverter.ToString(cryptoTransformSHA1.ComputeHash(buffer)).Replace("-", "");
+                return hash;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+        #endregion Cryptography with SHA1
     }
 }
